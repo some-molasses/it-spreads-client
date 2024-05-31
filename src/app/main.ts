@@ -6,6 +6,8 @@ export class CanvasController {
   static canvas: HTMLCanvasElement;
   static context: CanvasRenderingContext2D;
 
+  static lastFrame: number = 0;
+
   static init() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const context = canvas?.getContext("2d");
@@ -23,21 +25,25 @@ export class CanvasController {
   }
 
   static main() {
-    CanvasController.context.clearRect(
-      0,
-      0,
-      CanvasController.canvas.width,
-      CanvasController.canvas.height
-    );
-
-    State.player.draw(CanvasController.context);
-    State.spill.draw(CanvasController.context);
-
-    Input.doInputResponse();
-
-    State.player.update();
-    State.spill.update();
-
     requestAnimationFrame(CanvasController.main);
+
+    if (Date.now() - CanvasController.lastFrame > 16) {
+      CanvasController.lastFrame = Date.now();
+
+      CanvasController.context.clearRect(
+        0,
+        0,
+        CanvasController.canvas.width,
+        CanvasController.canvas.height
+      );
+
+      State.player.draw(CanvasController.context);
+      State.spill.draw(CanvasController.context);
+
+      Input.doInputResponse();
+
+      State.player.update();
+      State.spill.update();
+    }
   }
 }

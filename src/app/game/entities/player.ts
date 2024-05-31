@@ -1,8 +1,8 @@
 import { CONFIG } from "@/app/config";
 import { Circle } from "./circle";
 
-const ACCELERATION = 1.2;
-const DECELERATION = 0.5;
+const ACCELERATION = 1.7;
+const DECELERATION = 0.6;
 const MAX_SPEED = ACCELERATION * 9;
 
 export class Player extends Circle {

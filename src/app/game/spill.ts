@@ -3,19 +3,20 @@ import { Circle } from "./entities/circle";
 import { State } from "./state";
 
 const CIRCLE_WIDTH = 5;
+const CIRCLE_GROWTH_PERIOD_MS = 800;
 const MAX_CIRCLE_WIDTH = 50;
+
+const SOFT_BORDER_MARGIN = 100;
 
 const SPREAD_DISTANCE = MAX_CIRCLE_WIDTH;
 const POINT_MAXIMUM = 150;
 const SPREAD_INTERVAL = 75;
 
 const SPILL_POINT_GROWTH_RATE = 0.4;
-const SPILL_POINT_SWEEP_RATE = SPILL_POINT_GROWTH_RATE * 2;
-
-const SWEEP_RADIUS = 125;
+const SPILL_POINT_SWEEP_RATE = SPILL_POINT_GROWTH_RATE * 3;
+const SWEEP_RADIUS = 150;
 
 /**
- * - have points shrink faster when nearer to player
  * - have points move away from player by biasing the random function
  */
 export class Spill {
@@ -54,19 +55,20 @@ export class Spill {
   spread() {
     const base = this.points[this.points.length - 1]; // random walk
 
-    const x = base.x + (Math.random() * SPREAD_DISTANCE * 2 - SPREAD_DISTANCE);
+    const leftBias = 1 - Math.min(base.x / SOFT_BORDER_MARGIN, 1);
+    const rightBias = -(
+      1 - Math.min((CONFIG.WIDTH - base.x) / SOFT_BORDER_MARGIN, 1)
+    );
+
+    const biasedXRand = Math.random() + leftBias + rightBias;
+    const x = base.x + (biasedXRand * SPREAD_DISTANCE * 2 - SPREAD_DISTANCE);
+
     const y = base.y + (Math.random() * SPREAD_DISTANCE * 2 - SPREAD_DISTANCE);
 
     this.points.push(
       new SpillPoint(
-        Math.max(
-          Math.min(x, CONFIG.WIDTH - MAX_CIRCLE_WIDTH),
-          MAX_CIRCLE_WIDTH
-        ),
-        Math.max(
-          Math.min(y, CONFIG.HEIGHT - MAX_CIRCLE_WIDTH),
-          MAX_CIRCLE_WIDTH
-        )
+        CONFIG.inWidth(x, MAX_CIRCLE_WIDTH),
+        CONFIG.inHeight(y, MAX_CIRCLE_WIDTH)
       )
     );
   }
@@ -83,22 +85,53 @@ class SpillPoint extends Circle {
   dying: boolean = false;
 
   constructor(x: number, y: number) {
-    super(x, y, CIRCLE_WIDTH, "#00880077");
+    super(x, y, CIRCLE_WIDTH, SpillPoint.getColour());
   }
 
   get isDead() {
     return this.r <= 0;
   }
 
-  update() {
+  get growthState(): SpillPoint.State {
     if (this.dying) {
+      return SpillPoint.State.SHRINKING;
+    }
+
+    if (this.r <= MAX_CIRCLE_WIDTH) {
+      return SpillPoint.State.GROWING;
+    }
+
+    if (
+      Math.abs(
+        ((this.creationTime - Date.now()) % CIRCLE_GROWTH_PERIOD_MS) * 2
+      ) < CIRCLE_GROWTH_PERIOD_MS
+    ) {
+      return SpillPoint.State.GROWING;
+    } else {
+      return SpillPoint.State.SHRINKING;
+    }
+  }
+
+  update() {
+    if (this.growthState === SpillPoint.State.SHRINKING) {
       this.r -= SPILL_POINT_GROWTH_RATE;
+    }
+
+    if (this.growthState === SpillPoint.State.GROWING) {
+      this.r += SPILL_POINT_GROWTH_RATE;
+    }
+
+    if (this.dying) {
       return;
     }
 
     const playerDistance = State.player.distanceTo(this);
     if (playerDistance < SWEEP_RADIUS) {
-      this.r -= SPILL_POINT_SWEEP_RATE * (playerDistance / SWEEP_RADIUS + 0.5);
+      this.r -= Math.pow(
+        SPILL_POINT_SWEEP_RATE *
+          ((SWEEP_RADIUS - playerDistance) / SWEEP_RADIUS + 0.5),
+        1.2
+      );
 
       if (this.r <= 0) {
         this.dying = true;
@@ -106,9 +139,35 @@ class SpillPoint extends Circle {
 
       return;
     }
+  }
 
-    if (this.r < MAX_CIRCLE_WIDTH) {
-      this.r += SPILL_POINT_GROWTH_RATE;
-    }
+  private static getColour(isEnemy: boolean = true): string {
+    const green = {
+      h: 140,
+      s: 99,
+      l: 27,
+    };
+
+    const purple = {
+      h: 263,
+      s: 96,
+      l: 16,
+    };
+
+    const colour = isEnemy ? purple : green;
+
+    const dhue = (Math.random() - 0.5) * 30;
+    const dlight = (Math.random() - 0.5) * 4;
+
+    return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, 0.5)`;
+  }
+}
+
+namespace SpillPoint {
+  export enum State {
+    GROWING,
+    SHRINKING,
+    SWEEPING,
+    DEAD,
   }
 }
