@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { CanvasController } from "./main";
 import { CONFIG } from "./config";
 

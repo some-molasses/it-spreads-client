@@ -12,6 +12,11 @@ export class CanvasController {
   static lastFrame: number = 0;
 
   static init() {
+    if (this.canvas) {
+      console.warn("CanvasController.init already called");
+      return;
+    }
+
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const info = document.getElementById("info") as HTMLCanvasElement;
     const context = canvas?.getContext("2d");

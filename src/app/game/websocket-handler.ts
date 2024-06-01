@@ -5,7 +5,12 @@ const URL = "https://it-spreads-server.onrender.com/";
 
 export class WebsocketHandler {
   static ws: WebSocket;
-  static init() {
+  static init(): Promise<void> {
+    if (this.ws) {
+      console.warn("Websocket already initialized");
+      return Promise.reject();
+    }
+
     this.ws = new WebSocket(URL);
 
     return new Promise((resolve, reject) => {
@@ -17,7 +22,7 @@ export class WebsocketHandler {
       this.ws.onopen = (evt) => {
         this.ws.send("hello server!!");
         console.log(evt);
-        resolve(null);
+        resolve();
       };
 
       this.ws.onmessage = (event) => {
