@@ -10,6 +10,7 @@ export class CanvasController {
   static info: HTMLElement;
 
   static lastFrame: number = 0;
+  static lastServerSend: number = 0;
 
   static init() {
     if (this.canvas) {
@@ -31,7 +32,6 @@ export class CanvasController {
     info.innerHTML = "Loading connection to server...";
     WebsocketHandler.init().then(() => {
       info.innerHTML = "Connected!";
-      WebsocketHandler.send(State.getSendableState());
     });
 
     Input.setInputListeners();
@@ -59,6 +59,15 @@ export class CanvasController {
 
       State.player.update();
       State.spill.update();
+
+      /** @todo significantly reduce this ping time. */
+      if (
+        Date.now() - CanvasController.lastServerSend > 1000 &&
+        WebsocketHandler.canSend
+      ) {
+        CanvasController.lastServerSend = Date.now();
+        WebsocketHandler.send(State.getSendableState());
+      }
     }
   }
 }
