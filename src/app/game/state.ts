@@ -17,10 +17,12 @@ export class State {
         const handshakeData =
           data as ServerSentWebsocketMessage.HandshakeMessage;
         this.localPlayerIndex = handshakeData.localPlayerIndex;
+        break;
       }
       case "STATE": {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
         this.spill.setPoints(stateData.state.teams[0].spill.points);
+        break;
       }
     }
   }
