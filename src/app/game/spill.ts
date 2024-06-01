@@ -2,13 +2,13 @@ import { CONFIG } from "../config";
 import { Circle } from "./entities/circle";
 import { State } from "./state";
 
-const CIRCLE_WIDTH = 5;
+const INITIAL_CIRCLE_RADIUS = 5;
 const CIRCLE_GROWTH_PERIOD_MS = 800;
-const MAX_CIRCLE_WIDTH = 50;
+const MAX_CIRCLE_RADIUS = 50;
 
 const SOFT_BORDER_MARGIN = 100;
 
-const SPREAD_DISTANCE = MAX_CIRCLE_WIDTH;
+const SPREAD_DISTANCE = MAX_CIRCLE_RADIUS;
 const POINT_MAXIMUM = 150;
 const SPREAD_INTERVAL = 75;
 
@@ -24,7 +24,7 @@ export class Spill {
 
   constructor() {
     this.points.push(
-      new SpillPoint(600, 500, CIRCLE_WIDTH, Date.now() % 10000, 0)
+      new SpillPoint(600, 500, INITIAL_CIRCLE_RADIUS, Date.now() % 10000, 0)
     );
 
     const interval = setInterval(() => {
@@ -76,9 +76,9 @@ export class Spill {
 
     this.points.push(
       new SpillPoint(
-        CONFIG.inWidth(x, MAX_CIRCLE_WIDTH),
-        CONFIG.inHeight(y, MAX_CIRCLE_WIDTH),
-        CIRCLE_WIDTH,
+        CONFIG.inWidth(x, MAX_CIRCLE_RADIUS),
+        CONFIG.inHeight(y, MAX_CIRCLE_RADIUS),
+        INITIAL_CIRCLE_RADIUS,
         Date.now() % 10000,
         this.points.length
       )
@@ -117,7 +117,7 @@ class SpillPoint extends Circle {
       return SpillPoint.State.SHRINKING;
     }
 
-    if (this.r <= MAX_CIRCLE_WIDTH) {
+    if (this.r <= MAX_CIRCLE_RADIUS) {
       return SpillPoint.State.GROWING;
     }
 
