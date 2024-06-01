@@ -1,27 +1,33 @@
+import { ClientSentWebsocketMessage } from "../../../types";
 import { State } from "./state";
 
 const URL = "https://it-spreads-server.onrender.com/";
 
 export class WebsocketHandler {
+  static ws: WebSocket;
   static init() {
-    const ws = new WebSocket(URL);
+    this.ws = new WebSocket(URL);
 
     return new Promise((resolve, reject) => {
-      if (!ws) {
+      if (!this.ws) {
         reject();
-        throw new Error("No websocket?");
+        throw new Error("Illegal state: no websocket?");
       }
 
-      ws.onopen = (evt) => {
-        ws.send("hello server!!");
+      this.ws.onopen = (evt) => {
+        this.ws.send("hello server!!");
         console.log(evt);
         resolve(null);
       };
 
-      ws.onmessage = (event) => {
+      this.ws.onmessage = (event) => {
         console.log(event.data);
-        State.updateFromServer(event.data);
+        State.updateFromServer(JSON.parse(event.data));
       };
     });
+  }
+
+  static send(message: ClientSentWebsocketMessage) {
+    this.ws.send(JSON.stringify(message));
   }
 }

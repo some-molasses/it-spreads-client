@@ -26,6 +26,7 @@ export class CanvasController {
     info.innerHTML = "Loading connection to server...";
     WebsocketHandler.init().then(() => {
       info.innerHTML = "Connected!";
+      WebsocketHandler.send(State.getSendableState());
     });
 
     Input.setInputListeners();

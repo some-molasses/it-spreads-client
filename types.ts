@@ -18,7 +18,8 @@ export namespace ServerSentWebsocketMessage {
   }
 
   export interface SpillData {
-    points: Coords[];
+    /** x, y, radius, seed */
+    points: [number, number, number, number][];
   }
 
   export type Coords = [number, number];
@@ -26,5 +27,21 @@ export namespace ServerSentWebsocketMessage {
   export enum Team {
     GREEN,
     PURPLE,
+  }
+}
+
+export interface ClientSentWebsocketMessage {
+  type: "STATE";
+  payload: ClientSentWebsocketMessage.GameStatePayload;
+}
+
+export namespace ClientSentWebsocketMessage {
+  export interface GameStatePayload {
+    player: {
+      x: number;
+      y: number;
+      dx: number;
+      dy: number;
+    };
   }
 }

@@ -23,7 +23,9 @@ export class Spill {
   points: SpillPoint[] = [];
 
   constructor() {
-    this.points.push(new SpillPoint(600, 500));
+    this.points.push(
+      new SpillPoint(600, 500, CIRCLE_WIDTH, Date.now() % 10000, 0)
+    );
 
     const interval = setInterval(() => {
       if (this.points.length < 0) {
@@ -46,10 +48,17 @@ export class Spill {
     }, SPREAD_INTERVAL);
   }
 
-  update() {
+  draw(ctx: CanvasRenderingContext2D) {
     for (const point of this.points) {
-      point.update();
+      point.draw(ctx);
     }
+  }
+
+  setPoints(pointData: [number, number, number, number][]) {
+    this.points = pointData.map((point, index) => {
+      const [x, y, r, seed] = point;
+      return new SpillPoint(x, y, r, seed, index);
+    });
   }
 
   spread() {
@@ -68,24 +77,35 @@ export class Spill {
     this.points.push(
       new SpillPoint(
         CONFIG.inWidth(x, MAX_CIRCLE_WIDTH),
-        CONFIG.inHeight(y, MAX_CIRCLE_WIDTH)
+        CONFIG.inHeight(y, MAX_CIRCLE_WIDTH),
+        CIRCLE_WIDTH,
+        Date.now() % 10000,
+        this.points.length
       )
     );
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  update() {
     for (const point of this.points) {
-      point.draw(ctx);
+      point.update();
     }
   }
 }
 
 class SpillPoint extends Circle {
-  creationTime: number = Date.now();
+  seed: number = Date.now();
   dying: boolean = false;
 
-  constructor(x: number, y: number) {
-    super(x, y, CIRCLE_WIDTH, SpillPoint.getColour());
+  constructor(
+    x: number,
+    y: number,
+    radius: number,
+    seed: number,
+    index: number
+  ) {
+    super(x, y, radius, SpillPoint.getColour());
+
+    this.seed = seed;
   }
 
   get isDead() {
@@ -102,9 +122,8 @@ class SpillPoint extends Circle {
     }
 
     if (
-      Math.abs(
-        ((this.creationTime - Date.now()) % CIRCLE_GROWTH_PERIOD_MS) * 2
-      ) < CIRCLE_GROWTH_PERIOD_MS
+      Math.abs(((this.seed - Date.now()) % CIRCLE_GROWTH_PERIOD_MS) * 2) <
+      CIRCLE_GROWTH_PERIOD_MS
     ) {
       return SpillPoint.State.GROWING;
     } else {
@@ -117,10 +136,8 @@ class SpillPoint extends Circle {
     super.draw(
       context,
       this.x +
-        Math.sin((Date.now() - this.creationTime) / 1000) *
-          POINT_MOTION_DISTANCE,
-      this.y +
-        Math.cos((Date.now() - this.creationTime) / 700) * POINT_MOTION_DISTANCE
+        Math.sin((Date.now() - this.seed) / 1000) * POINT_MOTION_DISTANCE,
+      this.y + Math.cos((Date.now() - this.seed) / 700) * POINT_MOTION_DISTANCE
     );
   }
 
