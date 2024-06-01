@@ -1,4 +1,4 @@
-import { ClientSentWebsocketMessage } from "../../../types";
+import { ClientSentWebsocketMessage } from "../../../message-types";
 import { State } from "./state";
 
 const URL = "https://it-spreads-server.onrender.com/";

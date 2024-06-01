@@ -1,11 +1,16 @@
-export interface ServerSentWebsocketMessage {
-  type: "STATE";
-  payload: ServerSentWebsocketMessage.GameStatePayload;
-}
+export type ServerSentWebsocketMessage =
+  | ServerSentWebsocketMessage.GameStateMessage
+  | ServerSentWebsocketMessage.HandshakeMessage;
 
 export namespace ServerSentWebsocketMessage {
-  export interface GameStatePayload {
+  export interface GameStateMessage {
+    type: "STATE";
     state: GameState;
+  }
+
+  export interface HandshakeMessage {
+    type: "HANDSHAKE";
+    localPlayerIndex: number;
   }
 
   export interface GameState {
@@ -37,6 +42,7 @@ export interface ClientSentWebsocketMessage {
 
 export namespace ClientSentWebsocketMessage {
   export interface GameStatePayload {
+    localPlayerIndex: number;
     player: {
       x: number;
       y: number;

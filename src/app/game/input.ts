@@ -14,21 +14,24 @@ export class Input {
   }
 
   static doInputResponse() {
-    const SPEED = 8;
+    if (!State.localPlayerIndex) {
+      throw new Error("No local player index");
+    }
+
     if (this.keys.get("w")) {
-      State.player.accelerate("up");
+      State.players[State.localPlayerIndex].accelerate("up");
     }
 
     if (this.keys.get("a")) {
-      State.player.accelerate("left");
+      State.players[State.localPlayerIndex].accelerate("left");
     }
 
     if (this.keys.get("s")) {
-      State.player.accelerate("down");
+      State.players[State.localPlayerIndex].accelerate("down");
     }
 
     if (this.keys.get("d")) {
-      State.player.accelerate("right");
+      State.players[State.localPlayerIndex].accelerate("right");
     }
   }
 }

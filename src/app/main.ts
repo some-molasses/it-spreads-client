@@ -12,7 +12,7 @@ export class CanvasController {
   static lastFrame: number = 0;
   static lastServerSend: number = 0;
 
-  static init() {
+  static async init() {
     if (this.canvas) {
       console.warn("CanvasController.init already called");
       return;
@@ -30,9 +30,8 @@ export class CanvasController {
     CanvasController.context = context;
 
     info.innerHTML = "Loading connection to server...";
-    WebsocketHandler.init().then(() => {
-      info.innerHTML = "Connected!";
-    });
+    await WebsocketHandler.init();
+    info.innerHTML = "Connected!";
 
     Input.setInputListeners();
 
@@ -52,12 +51,17 @@ export class CanvasController {
         CanvasController.canvas.height
       );
 
-      State.player.draw(CanvasController.context);
+      for (const player of State.players) {
+        player.draw(CanvasController.context);
+      }
       State.spill.draw(CanvasController.context);
 
       Input.doInputResponse();
 
-      State.player.update();
+      /**these update functions might be useless */
+      for (const player of State.players) {
+        player.update();
+      }
       State.spill.update();
 
       if (

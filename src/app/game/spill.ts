@@ -97,7 +97,7 @@ export class Spill {
 
   update() {
     for (const point of this.points) {
-      point.update();
+      // point.update();
     }
   }
 }
@@ -151,34 +151,34 @@ class SpillPoint extends Circle {
     );
   }
 
-  update() {
-    if (this.growthState === SpillPoint.State.SHRINKING) {
-      this.r -= SPILL_POINT_GROWTH_RATE;
-    }
+  // update() {
+  //   if (this.growthState === SpillPoint.State.SHRINKING) {
+  //     this.r -= SPILL_POINT_GROWTH_RATE;
+  //   }
 
-    if (this.growthState === SpillPoint.State.GROWING) {
-      this.r += SPILL_POINT_GROWTH_RATE;
-    }
+  //   if (this.growthState === SpillPoint.State.GROWING) {
+  //     this.r += SPILL_POINT_GROWTH_RATE;
+  //   }
 
-    if (this.dying) {
-      return;
-    }
+  //   if (this.dying) {
+  //     return;
+  //   }
 
-    const playerDistance = State.player.distanceTo(this);
-    if (playerDistance < SWEEP_RADIUS) {
-      this.r -= Math.pow(
-        SPILL_POINT_SWEEP_RATE *
-          ((SWEEP_RADIUS - playerDistance) / SWEEP_RADIUS + 0.5),
-        1.2
-      );
+  //   const playerDistance = State.player.distanceTo(this);
+  //   if (playerDistance < SWEEP_RADIUS) {
+  //     this.r -= Math.pow(
+  //       SPILL_POINT_SWEEP_RATE *
+  //         ((SWEEP_RADIUS - playerDistance) / SWEEP_RADIUS + 0.5),
+  //       1.2
+  //     );
 
-      if (this.r <= 0) {
-        this.dying = true;
-      }
+  //     if (this.r <= 0) {
+  //       this.dying = true;
+  //     }
 
-      return;
-    }
-  }
+  //     return;
+  //   }
+  // }
 
   private static getColour(seed: number, isEnemy: boolean = false): string {
     const green = {
