@@ -60,9 +60,8 @@ export class CanvasController {
       State.player.update();
       State.spill.update();
 
-      /** @todo significantly reduce this ping time. */
       if (
-        Date.now() - CanvasController.lastServerSend > 50 &&
+        Date.now() - CanvasController.lastServerSend > 16 &&
         WebsocketHandler.canSend
       ) {
         CanvasController.lastServerSend = Date.now();

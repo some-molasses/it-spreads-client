@@ -18,6 +18,8 @@ const SWEEP_RADIUS = 150;
 
 const MAX_ANTI_SCORE = MAX_CIRCLE_RADIUS * POINT_MAXIMUM;
 
+const MAX_SEED = 10000;
+
 /**
  * - have points move away from player by biasing the random function
  */
@@ -26,7 +28,7 @@ export class Spill {
 
   constructor() {
     this.points.push(
-      new SpillPoint(600, 500, INITIAL_CIRCLE_RADIUS, Date.now() % 10000, 0)
+      new SpillPoint(600, 500, INITIAL_CIRCLE_RADIUS, Date.now() % MAX_SEED, 0)
     );
 
     const interval = setInterval(() => {
@@ -87,7 +89,7 @@ export class Spill {
         CONFIG.inWidth(x, MAX_CIRCLE_RADIUS),
         CONFIG.inHeight(y, MAX_CIRCLE_RADIUS),
         INITIAL_CIRCLE_RADIUS,
-        Date.now() % 10000,
+        Date.now() % MAX_SEED,
         this.points.length
       )
     );
@@ -111,7 +113,7 @@ class SpillPoint extends Circle {
     seed: number,
     index: number
   ) {
-    super(x, y, radius, SpillPoint.getColour());
+    super(x, y, radius, SpillPoint.getColour(seed));
 
     this.seed = seed;
   }
@@ -178,7 +180,7 @@ class SpillPoint extends Circle {
     }
   }
 
-  private static getColour(isEnemy: boolean = false): string {
+  private static getColour(seed: number, isEnemy: boolean = false): string {
     const green = {
       h: 140,
       s: 99,
@@ -195,8 +197,11 @@ class SpillPoint extends Circle {
 
     const colour = isEnemy ? green : purple;
 
-    const dhue = (Math.random() - 0.5) * 30;
-    const dlight = (Math.random() - 0.5) * 4;
+    const randomFactorH = (seed % 100) / 100;
+    const randomFactorL = (seed % 70) / 70;
+
+    const dhue = (randomFactorH - 0.5) * 30;
+    const dlight = (randomFactorL - 0.5) * 4;
 
     return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, ${
       colour.a
