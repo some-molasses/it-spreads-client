@@ -62,7 +62,7 @@ export class CanvasController {
 
       /** @todo significantly reduce this ping time. */
       if (
-        Date.now() - CanvasController.lastServerSend > 1000 &&
+        Date.now() - CanvasController.lastServerSend > 50 &&
         WebsocketHandler.canSend
       ) {
         CanvasController.lastServerSend = Date.now();

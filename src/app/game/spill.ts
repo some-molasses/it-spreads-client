@@ -183,20 +183,24 @@ class SpillPoint extends Circle {
       h: 140,
       s: 99,
       l: 27,
+      a: 0.25,
     };
 
     const purple = {
       h: 263,
       s: 96,
       l: 16,
+      a: 0.5,
     };
 
-    const colour = isEnemy ? purple : green;
+    const colour = isEnemy ? green : purple;
 
     const dhue = (Math.random() - 0.5) * 30;
     const dlight = (Math.random() - 0.5) * 4;
 
-    return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, 0.5)`;
+    return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, ${
+      colour.a
+    })`;
   }
 }
 
