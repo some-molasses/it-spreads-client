@@ -16,6 +16,8 @@ const SPILL_POINT_GROWTH_RATE = 0.4;
 const SPILL_POINT_SWEEP_RATE = SPILL_POINT_GROWTH_RATE * 3;
 const SWEEP_RADIUS = 150;
 
+const MAX_ANTI_SCORE = MAX_CIRCLE_RADIUS * POINT_MAXIMUM;
+
 /**
  * - have points move away from player by biasing the random function
  */
@@ -46,6 +48,12 @@ export class Spill {
         this.spread();
       }
     }, SPREAD_INTERVAL);
+  }
+
+  get score() {
+    return (
+      MAX_ANTI_SCORE - this.points.reduce((acc, point) => acc + point.r, 0)
+    );
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -170,7 +178,7 @@ class SpillPoint extends Circle {
     }
   }
 
-  private static getColour(isEnemy: boolean = true): string {
+  private static getColour(isEnemy: boolean = false): string {
     const green = {
       h: 140,
       s: 99,

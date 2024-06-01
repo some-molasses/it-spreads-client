@@ -20,8 +20,6 @@ export class WebsocketHandler {
       }
 
       this.ws.onopen = (evt) => {
-        this.ws.send("hello server!!");
-        console.log(evt);
         resolve();
       };
 
