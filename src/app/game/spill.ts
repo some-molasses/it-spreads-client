@@ -112,6 +112,18 @@ class SpillPoint extends Circle {
     }
   }
 
+  draw(context: CanvasRenderingContext2D) {
+    const POINT_MOTION_DISTANCE = 10;
+    super.draw(
+      context,
+      this.x +
+        Math.sin((Date.now() - this.creationTime) / 1000) *
+          POINT_MOTION_DISTANCE,
+      this.y +
+        Math.cos((Date.now() - this.creationTime) / 700) * POINT_MOTION_DISTANCE
+    );
+  }
+
   update() {
     if (this.growthState === SpillPoint.State.SHRINKING) {
       this.r -= SPILL_POINT_GROWTH_RATE;

@@ -26,6 +26,9 @@ export default function Home() {
       >
         Your browser does not support the HTML canvas tag.
       </canvas>
+      <div>
+        <span id="info"></span>
+      </div>
     </div>
   );
 }

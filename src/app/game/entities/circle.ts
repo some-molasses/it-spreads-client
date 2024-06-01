@@ -11,14 +11,14 @@ export class Circle {
     this.colour = colour;
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, x?: number, y?: number) {
     if (this.r <= 0) {
       return;
     }
 
     context.fillStyle = this.colour;
     context.beginPath();
-    context.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+    context.arc(x ?? this.x, y ?? this.y, this.r, 0, 2 * Math.PI);
     context.fill();
   }
 

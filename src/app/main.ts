@@ -7,10 +7,13 @@ export class CanvasController {
   static canvas: HTMLCanvasElement;
   static context: CanvasRenderingContext2D;
 
+  static info: HTMLElement;
+
   static lastFrame: number = 0;
 
   static init() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const info = document.getElementById("info") as HTMLCanvasElement;
     const context = canvas?.getContext("2d");
     if (!context) {
       console.error("Failed to get 2d context");
@@ -20,7 +23,11 @@ export class CanvasController {
     CanvasController.canvas = canvas;
     CanvasController.context = context;
 
-    WebsocketHandler.init();
+    info.innerHTML = "Loading connection to server...";
+    WebsocketHandler.init().then(() => {
+      info.innerHTML = "Connected!";
+    });
+
     Input.setInputListeners();
 
     this.main();
