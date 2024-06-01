@@ -1,6 +1,7 @@
 import { Input } from "./game/input";
 import { Spill } from "./game/spill";
 import { State } from "./game/state";
+import { WebsocketHandler } from "./game/websocket-handler";
 
 export class CanvasController {
   static canvas: HTMLCanvasElement;
@@ -19,6 +20,7 @@ export class CanvasController {
     CanvasController.canvas = canvas;
     CanvasController.context = context;
 
+    WebsocketHandler.init();
     Input.setInputListeners();
 
     this.main();
