@@ -1,25 +1,9 @@
 import { Team } from "../../../message-types";
-import { CONFIG } from "../config";
 import { Circle } from "./entities/circle";
 import { State } from "./state";
 
-const INITIAL_CIRCLE_RADIUS = 5;
 const CIRCLE_GROWTH_PERIOD_MS = 800;
 const MAX_CIRCLE_RADIUS = 50;
-
-const SOFT_BORDER_MARGIN = 100;
-
-const SPREAD_DISTANCE = MAX_CIRCLE_RADIUS;
-const POINT_MAXIMUM = 150;
-const SPREAD_INTERVAL = 75;
-
-const SPILL_POINT_GROWTH_RATE = 0.4;
-const SPILL_POINT_SWEEP_RATE = SPILL_POINT_GROWTH_RATE * 3;
-const SWEEP_RADIUS = 150;
-
-const MAX_ANTI_SCORE = MAX_CIRCLE_RADIUS * POINT_MAXIMUM;
-
-const MAX_SEED = 10000;
 
 /**
  * - have points move away from player by biasing the random function
@@ -30,12 +14,6 @@ export class Spill {
 
   constructor(team: Team) {
     this.team = team;
-  }
-
-  get score() {
-    return (
-      MAX_ANTI_SCORE - this.points.reduce((acc, point) => acc + point.r, 0)
-    );
   }
 
   draw(ctx: CanvasRenderingContext2D) {

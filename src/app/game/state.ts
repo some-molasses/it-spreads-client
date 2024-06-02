@@ -13,10 +13,42 @@ export class State {
   static players: Record<number, Player> = {};
   static localPlayerId: number | null = null;
 
+  static maxPlayersPerTeam: number;
+
   static spills = {
     [Team.GREEN]: new Spill(Team.GREEN),
     [Team.PURPLE]: new Spill(Team.PURPLE),
   };
+
+  static get activePlayers() {
+    const playersByTeam: Record<Team, Player[]> = {
+      [Team.GREEN]: [],
+      [Team.PURPLE]: [],
+    };
+
+    for (const player of Object.values(this.players)) {
+      if (player) {
+        playersByTeam[player.team].push(player);
+      }
+    }
+
+    const sortedPlayers = {
+      [Team.GREEN]: playersByTeam[Team.GREEN].sort(
+        (a, b) => a.creationTime - b.creationTime
+      ),
+      [Team.PURPLE]: playersByTeam[Team.PURPLE].sort(
+        (a, b) => a.creationTime - b.creationTime
+      ),
+    };
+
+    return {
+      [Team.GREEN]: sortedPlayers[Team.GREEN].slice(0, State.maxPlayersPerTeam),
+      [Team.PURPLE]: sortedPlayers[Team.PURPLE].slice(
+        0,
+        State.maxPlayersPerTeam
+      ),
+    };
+  }
 
   static updateFromServer(data: ServerSentWebsocketMessage) {
     switch (data.type) {
@@ -30,6 +62,7 @@ export class State {
           0,
           0,
           Team.GREEN,
+          Date.now(),
           true
         );
 
@@ -38,6 +71,8 @@ export class State {
       }
       case "STATE": {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
+
+        State.maxPlayersPerTeam = stateData.state.maxPlayersPerTeam;
 
         State.setPlayers(data.state.players);
 
@@ -93,11 +128,12 @@ export class State {
   }
 
   static setPlayers(
-    data: Record<number, [number, number, number, number, Team]>
+    data: Record<number, [number, number, number, number, Team, number]>
   ) {
     Object.entries(data).forEach(([id, dataset]) => {
       if (Number(id) === State.localPlayerId) {
         State.players[Number(id)].team = dataset[4];
+        State.players[Number(id)].creationTime = dataset[5];
         return;
       }
 
@@ -107,6 +143,7 @@ export class State {
         dataset[2],
         dataset[3],
         dataset[4],
+        dataset[5],
         false
       );
     });

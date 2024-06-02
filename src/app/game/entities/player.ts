@@ -1,6 +1,7 @@
 import { CONFIG } from "@/app/config";
 import { Circle } from "./circle";
 import { Team } from "../../../../message-types";
+import { State } from "../state";
 
 const ACCELERATION = 1.7;
 const DECELERATION = 0.6;
@@ -11,11 +12,14 @@ const Colours = {
   purpleInner: "hsl(244, 77%, 21%)",
   green: "hsl(139, 77%, 41%)",
   greenInner: "hsl(139, 77%, 31%)",
+  disabled: "#888",
 };
 
 export class Player extends Circle {
   dx: number = 0;
   dy: number = 0;
+  creationTime: number;
+
   team: Team;
   isLocal: boolean;
 
@@ -25,6 +29,7 @@ export class Player extends Circle {
     dx: number,
     dy: number,
     team: Team,
+    creationTime: number,
     isLocal: boolean
   ) {
     super(x, y, 25);
@@ -34,6 +39,7 @@ export class Player extends Circle {
 
     this.team = team;
     this.isLocal = isLocal;
+    this.creationTime = creationTime;
   }
 
   get colour(): string {
@@ -41,6 +47,10 @@ export class Player extends Circle {
   }
 
   get innerColour(): string {
+    if (!State.activePlayers[this.team].includes(this)) {
+      return Colours.disabled;
+    }
+
     if (this.isLocal) {
       return this.team === Team.GREEN
         ? Colours.greenInner

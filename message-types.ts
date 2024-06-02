@@ -21,11 +21,12 @@ export namespace ServerSentWebsocketMessage {
   }
 
   export interface GameState {
-    /** x, y, dx, dy */
-    players: Record<number, [number, number, number, number, Team]>;
+    /** x, y, dx, dy, team, connection time */
+    players: Record<number, [number, number, number, number, Team, number]>;
     teams: Record<Team, TeamState>;
     timeRemaining: number;
     playersRemaining: Record<Team, number>;
+    maxPlayersPerTeam: number;
   }
 
   export interface TeamState {
