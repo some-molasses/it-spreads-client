@@ -17,7 +17,7 @@ export default function Home() {
         margin: "20px",
       }}
     >
-      <h1 style={{ marginBottom: "20px" }}>it spreads aaaa</h1>
+      <h1 style={{ marginBottom: "20px" }}>it-spreads.vercel.app</h1>
       <canvas
         id="canvas"
         width={CONFIG.WIDTH}

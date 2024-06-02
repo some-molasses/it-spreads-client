@@ -56,18 +56,33 @@ export class CanvasController {
         CanvasController.canvas.height
       );
 
+      for (const spill of Object.values(State.spills)) {
+        spill.draw(CanvasController.context);
+      }
+
+      let localPlayer = null;
       for (const player of Object.values(State.players)) {
+        if (player.isLocal) {
+          localPlayer = player;
+          continue;
+        }
         player.draw(CanvasController.context);
       }
-      State.spill.draw(CanvasController.context);
+      if (!localPlayer) {
+        throw new Error("No local player found");
+      }
+
+      localPlayer.draw(CanvasController.context);
 
       Input.doInputResponse();
 
-      /**these update functions might be useless */
       for (const player of Object.values(State.players)) {
         player.update();
       }
-      State.spill.update();
+      /**these update functions might be useless */
+      for (const spill of Object.values(State.spills)) {
+        spill.update();
+      }
 
       if (
         Date.now() - CanvasController.lastServerSend > 16 &&

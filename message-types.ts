@@ -2,6 +2,11 @@ export type ServerSentWebsocketMessage =
   | ServerSentWebsocketMessage.GameStateMessage
   | ServerSentWebsocketMessage.HandshakeMessage;
 
+export enum Team {
+  GREEN,
+  PURPLE,
+}
+
 export namespace ServerSentWebsocketMessage {
   export interface GameStateMessage {
     type: "STATE";
@@ -15,7 +20,7 @@ export namespace ServerSentWebsocketMessage {
 
   export interface GameState {
     /** x, y, dx, dy */
-    players: Record<number, [number, number, number, number]>;
+    players: Record<number, [number, number, number, number, Team]>;
     teams: Record<Team, TeamState>;
   }
 
@@ -29,11 +34,6 @@ export namespace ServerSentWebsocketMessage {
   }
 
   export type Coords = [number, number];
-
-  export enum Team {
-    GREEN,
-    PURPLE,
-  }
 }
 
 export interface ClientSentWebsocketMessage {

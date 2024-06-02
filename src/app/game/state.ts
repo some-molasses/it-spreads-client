@@ -1,6 +1,7 @@
 import {
   ClientSentWebsocketMessage,
   ServerSentWebsocketMessage,
+  Team,
 } from "../../../message-types";
 import { Player } from "./entities/player";
 import { Spill } from "./spill";
@@ -10,7 +11,10 @@ export class State {
   static players: Record<number, Player> = {};
   static localPlayerId: number | null = null;
 
-  static spill = new Spill();
+  static spills = {
+    [Team.GREEN]: new Spill(Team.GREEN),
+    [Team.PURPLE]: new Spill(Team.PURPLE),
+  };
 
   static updateFromServer(data: ServerSentWebsocketMessage) {
     switch (data.type) {
@@ -18,7 +22,14 @@ export class State {
         const handshakeData =
           data as ServerSentWebsocketMessage.HandshakeMessage;
         State.localPlayerId = handshakeData.localPlayerId;
-        State.players[State.localPlayerId] = new Player(0, 0, 0, 0, true);
+        State.players[State.localPlayerId] = new Player(
+          0,
+          0,
+          0,
+          0,
+          Team.GREEN,
+          true
+        );
 
         State.sendStateUpdate();
         break;
@@ -26,7 +37,13 @@ export class State {
       case "STATE": {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
         State.setPlayers(data.state.players);
-        State.spill.setPoints(stateData.state.teams[0].spill.points);
+
+        State.spills[Team.GREEN].setPoints(
+          stateData.state.teams[Team.GREEN].spill.points
+        );
+        State.spills[Team.PURPLE].setPoints(
+          stateData.state.teams[Team.PURPLE].spill.points
+        );
         break;
       }
     }
@@ -59,11 +76,12 @@ export class State {
     WebsocketHandler.send(State.getSendableState());
   }
 
-  static setPlayers(data: Record<number, [number, number, number, number]>) {
-    console.log(data);
-
+  static setPlayers(
+    data: Record<number, [number, number, number, number, Team]>
+  ) {
     Object.entries(data).forEach(([id, dataset]) => {
       if (Number(id) === State.localPlayerId) {
+        State.players[Number(id)].team = dataset[4];
         return;
       }
 
@@ -72,6 +90,7 @@ export class State {
         dataset[1],
         dataset[2],
         dataset[3],
+        dataset[4],
         false
       );
     });
