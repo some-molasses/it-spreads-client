@@ -29,24 +29,7 @@ export class Spill {
   team: Team;
 
   constructor(team: Team) {
-    // this.points.push(
-    //   new SpillPoint(600, 500, INITIAL_CIRCLE_RADIUS, Date.now() % MAX_SEED, 0)
-    // );
     this.team = team;
-
-    // const interval = setInterval(() => {
-    //   if (this.points.length >= POINT_MAXIMUM) {
-    //     this.points[this.points.length - POINT_MAXIMUM].dying = true;
-    //   }
-
-    //   if (this.points[0].isDead) {
-    //     this.points.shift();
-    //   }
-
-    //   if (this.points.length > 0 && this.points.length < POINT_MAXIMUM) {
-    //     this.spread();
-    //   }
-    // }, SPREAD_INTERVAL);
   }
 
   get score() {
@@ -66,32 +49,6 @@ export class Spill {
       const [x, y, r, seed] = point;
       return new SpillPoint(x, y, r, seed, this.team, index);
     });
-  }
-
-  spread() {
-    // const base = this.points[this.points.length - 1]; // random walk
-    // const leftBias = 1 - Math.min(base.x / SOFT_BORDER_MARGIN, 1);
-    // const rightBias = -(
-    //   1 - Math.min((CONFIG.WIDTH - base.x) / SOFT_BORDER_MARGIN, 1)
-    // );
-    // const biasedXRand = Math.random() + leftBias + rightBias;
-    // const x = base.x + (biasedXRand * SPREAD_DISTANCE * 2 - SPREAD_DISTANCE);
-    // const y = base.y + (Math.random() * SPREAD_DISTANCE * 2 - SPREAD_DISTANCE);
-    // this.points.push(
-    //   new SpillPoint(
-    //     CONFIG.inWidth(x, MAX_CIRCLE_RADIUS),
-    //     CONFIG.inHeight(y, MAX_CIRCLE_RADIUS),
-    //     INITIAL_CIRCLE_RADIUS,
-    //     Date.now() % MAX_SEED,
-    //     this.points.length
-    //   )
-    // );
-  }
-
-  update() {
-    for (const point of this.points) {
-      // point.update();
-    }
   }
 }
 

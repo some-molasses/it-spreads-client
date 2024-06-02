@@ -57,10 +57,6 @@ export class CanvasController {
       for (const player of Object.values(State.players)) {
         player.update();
       }
-      /**these update functions might be useless */
-      for (const spill of Object.values(State.spills)) {
-        spill.update();
-      }
 
       if (
         Date.now() - CanvasController.lastServerSend > 16 &&
