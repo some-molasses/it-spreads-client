@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { CanvasController } from "./main";
 import { CONFIG } from "./config";
 
@@ -18,6 +18,12 @@ export default function Home() {
       }}
     >
       <h1 style={{ marginBottom: "20px" }}>it-spreads.vercel.app</h1>
+      <p style={{ margin: "20px" }}>
+        Remaining time: <span id="remaining-time">-spreads.vercel.app</span>
+      </p>
+      <p>
+        <span id="messages"></span>
+      </p>
       <canvas
         id="canvas"
         width={CONFIG.WIDTH}

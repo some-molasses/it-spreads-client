@@ -24,6 +24,7 @@ export namespace ServerSentWebsocketMessage {
     /** x, y, dx, dy */
     players: Record<number, [number, number, number, number, Team]>;
     teams: Record<Team, TeamState>;
+    timeRemaining: number;
   }
 
   export interface TeamState {
