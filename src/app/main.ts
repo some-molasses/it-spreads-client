@@ -36,6 +36,7 @@ export class CanvasController {
         (info.innerHTML += "\nThis can take up to 50 seconds on initial load.")
     );
     await WebsocketHandler.init();
+
     clearTimeout(timeout);
     info.innerHTML = "Connected!";
 

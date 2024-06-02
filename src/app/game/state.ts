@@ -38,6 +38,7 @@ export class State {
       }
       case "STATE": {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
+
         State.setPlayers(data.state.players);
 
         for (const team of Teams) {

@@ -24,16 +24,12 @@ export class WebsocketHandler {
         throw new Error("Illegal state: no websocket?");
       }
 
-      this.ws.onopen = (evt) => {
-        resolve();
-      };
-
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        State.updateFromServer(data);
         if (data.type !== "HANDSHAKE") {
           resolve();
         }
-        State.updateFromServer(data);
       };
     });
   }
