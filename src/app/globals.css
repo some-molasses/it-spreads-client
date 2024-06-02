@@ -100,6 +100,36 @@ a {
   text-decoration: none;
 }
 
+#score-wrapper {
+  display: flex;
+  margin: 4px auto;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  max-width: 800px;
+  width: 100%;
+  padding: 2px;
+  gap: 2px;
+  background-color: #fff;
+}
+
+.score-bar-back {
+  width: 100%;
+  background-color: #111;
+}
+
+.score-bar {
+  height: 16px;
+}
+
+#green-score-bar {
+  background-color: green;
+}
+
+#purple-score-bar {
+  background-color: purple;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

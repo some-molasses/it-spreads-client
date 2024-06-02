@@ -145,51 +145,24 @@ class SpillPoint extends Circle {
     );
   }
 
-  // update() {
-  //   if (this.growthState === SpillPoint.State.SHRINKING) {
-  //     this.r -= SPILL_POINT_GROWTH_RATE;
-  //   }
-
-  //   if (this.growthState === SpillPoint.State.GROWING) {
-  //     this.r += SPILL_POINT_GROWTH_RATE;
-  //   }
-
-  //   if (this.dying) {
-  //     return;
-  //   }
-
-  //   const playerDistance = State.player.distanceTo(this);
-  //   if (playerDistance < SWEEP_RADIUS) {
-  //     this.r -= Math.pow(
-  //       SPILL_POINT_SWEEP_RATE *
-  //         ((SWEEP_RADIUS - playerDistance) / SWEEP_RADIUS + 0.5),
-  //       1.2
-  //     );
-
-  //     if (this.r <= 0) {
-  //       this.dying = true;
-  //     }
-
-  //     return;
-  //   }
-  // }
-
   private static getColour(seed: number, team: Team): string {
+    if (!State.localPlayerId) {
+      throw new Error("Local player ID not set");
+    }
+
     const green = {
       h: 140,
       s: 99,
       l: 27,
-      a: 0.25,
     };
 
     const purple = {
       h: 263,
       s: 96,
       l: 16,
-      a: 0.5,
     };
 
-    const colour = team === Team.GREEN ? green : purple;
+    const colour = team === Team.GREEN ? purple : green;
 
     const randomFactorH = (seed % 100) / 100;
     const randomFactorL = (seed % 70) / 70;
@@ -198,7 +171,7 @@ class SpillPoint extends Circle {
     const dlight = (randomFactorL - 0.5) * 4;
 
     return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, ${
-      colour.a
+      State.players[State.localPlayerId].team === team ? 0.1 : 0.4
     })`;
   }
 }

@@ -27,6 +27,17 @@ export default function Home() {
         Your browser does not support the HTML canvas tag.
       </canvas>
       <div>
+        <span>Scores</span>
+        <div id="score-wrapper">
+          <div className="score-bar-back">
+            <div className="score-bar" id="green-score-bar"></div>
+          </div>
+          <div className="score-bar-back">
+            <div className="score-bar" id="purple-score-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div style={{ paddingBottom: "8px" }}>
         <span id="info"></span>
       </div>
     </div>

@@ -7,6 +7,8 @@ export enum Team {
   PURPLE,
 }
 
+export const Teams = [Team.GREEN, Team.PURPLE];
+
 export namespace ServerSentWebsocketMessage {
   export interface GameStateMessage {
     type: "STATE";
@@ -26,6 +28,7 @@ export namespace ServerSentWebsocketMessage {
 
   export interface TeamState {
     spill: SpillData;
+    score: number;
   }
 
   export interface SpillData {

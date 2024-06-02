@@ -2,7 +2,9 @@ import {
   ClientSentWebsocketMessage,
   ServerSentWebsocketMessage,
   Team,
+  Teams,
 } from "../../../message-types";
+import { PageHandler } from "../page-handler";
 import { Player } from "./entities/player";
 import { Spill } from "./spill";
 import { WebsocketHandler } from "./websocket-handler";
@@ -38,14 +40,28 @@ export class State {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
         State.setPlayers(data.state.players);
 
-        console.log(stateData);
+        for (const team of Teams) {
+          State.spills[team].setPoints(
+            stateData.state.teams[team].spill.points
+          );
+        }
 
-        State.spills[Team.GREEN].setPoints(
-          stateData.state.teams[Team.GREEN].spill.points
+        const totalScore =
+          stateData.state.teams[Team.GREEN].score +
+          stateData.state.teams[Team.PURPLE].score;
+
+        console.log(
+          stateData.state.teams[Team.GREEN].score,
+          stateData.state.teams[Team.PURPLE].score
         );
-        State.spills[Team.PURPLE].setPoints(
-          stateData.state.teams[Team.PURPLE].spill.points
-        );
+
+        for (const team of Teams) {
+          PageHandler.setScorePercentage(
+            team,
+            stateData.state.teams[team].score / totalScore
+          );
+        }
+
         break;
       }
     }
