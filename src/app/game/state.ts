@@ -38,6 +38,8 @@ export class State {
         const stateData = data as ServerSentWebsocketMessage.GameStateMessage;
         State.setPlayers(data.state.players);
 
+        console.log(stateData);
+
         State.spills[Team.GREEN].setPoints(
           stateData.state.teams[Team.GREEN].spill.points
         );

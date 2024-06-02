@@ -1,3 +1,4 @@
+import { Team } from "../../message-types";
 import { Input } from "./game/input";
 import { Spill } from "./game/spill";
 import { State } from "./game/state";
@@ -49,30 +50,7 @@ export class CanvasController {
     if (Date.now() - CanvasController.lastFrame > 16) {
       CanvasController.lastFrame = Date.now();
 
-      CanvasController.context.clearRect(
-        0,
-        0,
-        CanvasController.canvas.width,
-        CanvasController.canvas.height
-      );
-
-      for (const spill of Object.values(State.spills)) {
-        spill.draw(CanvasController.context);
-      }
-
-      let localPlayer = null;
-      for (const player of Object.values(State.players)) {
-        if (player.isLocal) {
-          localPlayer = player;
-          continue;
-        }
-        player.draw(CanvasController.context);
-      }
-      if (!localPlayer) {
-        throw new Error("No local player found");
-      }
-
-      localPlayer.draw(CanvasController.context);
+      CanvasController.redraw();
 
       Input.doInputResponse();
 
@@ -92,5 +70,35 @@ export class CanvasController {
         State.sendStateUpdate();
       }
     }
+  }
+
+  static redraw() {
+    if (!State.localPlayerId) {
+      throw new Error("No local player ID");
+    }
+
+    CanvasController.context.clearRect(
+      0,
+      0,
+      CanvasController.canvas.width,
+      CanvasController.canvas.height
+    );
+
+    const localPlayer = State.players[State.localPlayerId];
+
+    const friendlyTeam = localPlayer.team;
+    const enemyTeam = friendlyTeam === Team.GREEN ? Team.PURPLE : Team.GREEN;
+
+    State.spills[friendlyTeam].draw(CanvasController.context);
+    State.spills[enemyTeam].draw(CanvasController.context);
+
+    for (const player of Object.values(State.players)) {
+      if (player.isLocal) {
+        continue;
+      }
+      player.draw(CanvasController.context);
+    }
+
+    localPlayer.draw(CanvasController.context);
   }
 }
