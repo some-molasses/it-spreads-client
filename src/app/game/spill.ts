@@ -105,8 +105,12 @@ class SpillPoint extends Circle {
     const dhue = (randomFactorH - 0.5) * 30;
     const dlight = (randomFactorL - 0.5) * 4;
 
+    if (!State.players[State.localPlayerId]!) {
+      throw new Error("Local player does not exist?");
+    }
+
     return `hsla(${colour.h + dhue}, ${colour.s}%, ${colour.l + dlight}%, ${
-      State.players[State.localPlayerId].team === team ? 0.1 : 0.4
+      State.players[State.localPlayerId]!.team === team ? 0.1 : 0.4
     })`;
   }
 }

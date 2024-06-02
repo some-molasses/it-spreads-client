@@ -57,7 +57,9 @@ export class CanvasController {
       Input.doInputResponse();
 
       for (const player of Object.values(State.players)) {
-        player.update();
+        if (player) {
+          player.update();
+        }
       }
 
       if (
@@ -84,6 +86,10 @@ export class CanvasController {
 
     const localPlayer = State.players[State.localPlayerId];
 
+    if (!localPlayer) {
+      throw new Error("Local player does not exist?");
+    }
+
     const friendlyTeam = localPlayer.team;
     const enemyTeam = friendlyTeam === Team.GREEN ? Team.PURPLE : Team.GREEN;
 
@@ -91,6 +97,10 @@ export class CanvasController {
     State.spills[enemyTeam].draw(CanvasController.context);
 
     for (const player of Object.values(State.players)) {
+      if (!player) {
+        continue;
+      }
+
       if (player.isLocal) {
         continue;
       }

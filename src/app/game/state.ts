@@ -10,7 +10,7 @@ import { Spill } from "./spill";
 import { WebsocketHandler } from "./websocket-handler";
 
 export class State {
-  static players: Record<number, Player> = {};
+  static players: Record<number, Player | undefined> = {};
   static localPlayerId: number | null = null;
 
   static maxPlayersPerTeam: number;
@@ -132,15 +132,19 @@ export class State {
       throw new Error("No local player id");
     }
 
+    if (!this.players[this.localPlayerId]) {
+      throw new Error("Local player does not exist");
+    }
+
     return {
       type: "STATE",
       payload: {
         localPlayerId: this.localPlayerId,
         player: {
-          x: this.players[this.localPlayerId].x,
-          y: this.players[this.localPlayerId].y,
-          dx: this.players[this.localPlayerId].dx,
-          dy: this.players[this.localPlayerId].dy,
+          x: this.players[this.localPlayerId]!.x,
+          y: this.players[this.localPlayerId]!.y,
+          dx: this.players[this.localPlayerId]!.dx,
+          dy: this.players[this.localPlayerId]!.dy,
         },
       },
     };
@@ -157,10 +161,23 @@ export class State {
   static setPlayers(
     data: Record<number, [number, number, number, number, Team, number]>
   ) {
+    const currentPlayerIds = Object.keys(this.players);
+    const playersProcessed: Record<string, boolean> = {};
+
+    for (const id of currentPlayerIds) {
+      playersProcessed[id] = false;
+    }
+
     Object.entries(data).forEach(([id, dataset]) => {
+      playersProcessed[id] = true;
+
       if (Number(id) === State.localPlayerId) {
-        State.players[Number(id)].team = dataset[4];
-        State.players[Number(id)].creationTime = dataset[5];
+        if (!State.players[Number(id)]) {
+          throw new Error("No local player?");
+        }
+
+        State.players[Number(id)]!.team = dataset[4];
+        State.players[Number(id)]!.creationTime = dataset[5];
         return;
       }
 
@@ -174,5 +191,14 @@ export class State {
         false
       );
     });
+
+    // delete unprocessed players
+    console.log(data, playersProcessed);
+    for (const id of currentPlayerIds) {
+      if (!playersProcessed[id]) {
+        console.log(`Deleting player ${id}`);
+        State.players[Number(id)] = undefined;
+      }
+    }
   }
 }

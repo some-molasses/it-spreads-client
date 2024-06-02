@@ -25,20 +25,24 @@ export class Input {
       throw new Error("No local player id");
     }
 
+    if (!State.players[State.localPlayerId!]) {
+      throw new Error("Local player does not exist");
+    }
+
     if (this.keys.get("w")) {
-      State.players[State.localPlayerId!].accelerate("up");
+      State.players[State.localPlayerId!]!.accelerate("up");
     }
 
     if (this.keys.get("a")) {
-      State.players[State.localPlayerId!].accelerate("left");
+      State.players[State.localPlayerId!]!.accelerate("left");
     }
 
     if (this.keys.get("s")) {
-      State.players[State.localPlayerId!].accelerate("down");
+      State.players[State.localPlayerId!]!.accelerate("down");
     }
 
     if (this.keys.get("d")) {
-      State.players[State.localPlayerId!].accelerate("right");
+      State.players[State.localPlayerId!]!.accelerate("right");
     }
   }
 }
