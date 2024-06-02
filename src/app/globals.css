@@ -120,6 +120,7 @@ a {
 
 .score-bar {
   height: 16px;
+  transition: 0.5s linear;
 }
 
 #green-score-bar {

@@ -1,6 +1,5 @@
 import { Team } from "../../message-types";
 import { Input } from "./game/input";
-import { Spill } from "./game/spill";
 import { State } from "./game/state";
 import { WebsocketHandler } from "./game/websocket-handler";
 
@@ -46,7 +45,9 @@ export class CanvasController {
   }
 
   static main() {
-    requestAnimationFrame(CanvasController.main);
+    if (!State.isGameComplete) {
+      requestAnimationFrame(CanvasController.main);
+    }
 
     if (Date.now() - CanvasController.lastFrame > 16) {
       CanvasController.lastFrame = Date.now();

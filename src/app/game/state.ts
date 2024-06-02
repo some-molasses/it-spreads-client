@@ -14,6 +14,7 @@ export class State {
   static localPlayerId: number | null = null;
 
   static maxPlayersPerTeam: number;
+  static isGameComplete: boolean = false;
 
   static spills = {
     [Team.GREEN]: new Spill(Team.GREEN),
@@ -94,6 +95,32 @@ export class State {
         }
 
         PageHandler.setRemainingTime(stateData.state.timeRemaining);
+        PageHandler.setMessage(
+          `Reinforcements coming! Each team currently has room for ${
+            stateData.state.maxPlayersPerTeam
+          } player${stateData.state.maxPlayersPerTeam !== 1 ? "s" : ""}.`
+        );
+
+        if (stateData.state.timeRemaining <= 0) {
+          PageHandler.mainDisplay.outerHTML = "";
+          PageHandler.scoreDisplay.style.display = "block";
+
+          PageHandler.greenScoreText.innerText = `Green score: ${stateData.state.teams[
+            Team.GREEN
+          ].score.toString()}`;
+          PageHandler.purpleScoreText.innerText = `Purple score: ${stateData.state.teams[
+            Team.PURPLE
+          ].score.toString()}`;
+
+          const winner =
+            stateData.state.teams[Team.PURPLE].score >
+            stateData.state.teams[Team.GREEN].score
+              ? "Purple"
+              : "Green";
+
+          PageHandler.winnerText.innerText = `${winner} wins!`;
+          State.isGameComplete = true;
+        }
 
         break;
       }

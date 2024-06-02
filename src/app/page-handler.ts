@@ -17,12 +17,34 @@ export class PageHandler {
     return this.getElement("remaining-time", "time element");
   }
 
+  static get mainDisplay() {
+    return this.getElement("game-content", "game content");
+  }
+
+  static get scoreDisplay() {
+    return this.getElement("endgame-screen", "endgame screen");
+  }
+
+  static get greenScoreText() {
+    return this.getElement("green-score", "green score");
+  }
+
+  static get purpleScoreText() {
+    return this.getElement("purple-score", "purple score");
+  }
+
+  static get winnerText() {
+    return this.getElement("winner-text", "winner text");
+  }
+
   static getScoreBar(team: Team) {
     const teamname = team === Team.GREEN ? "green" : "purple";
     return this.getElement(`${teamname}-score-bar`, `${teamname} score bar`);
   }
 
-  static setMessage(message: string) {}
+  static setMessage(message: string) {
+    this.messageElement.innerText = message;
+  }
 
   static setRemainingTime(time: number) {
     const seconds = Math.floor((time % 60000) / 1000);
