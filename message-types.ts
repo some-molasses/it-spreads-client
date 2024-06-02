@@ -10,15 +10,16 @@ export namespace ServerSentWebsocketMessage {
 
   export interface HandshakeMessage {
     type: "HANDSHAKE";
-    localPlayerIndex: number;
+    localPlayerId: number;
   }
 
   export interface GameState {
+    /** x, y, dx, dy */
+    players: Record<number, [number, number, number, number]>;
     teams: Record<Team, TeamState>;
   }
 
   export interface TeamState {
-    player: Coords;
     spill: SpillData;
   }
 
@@ -42,7 +43,7 @@ export interface ClientSentWebsocketMessage {
 
 export namespace ClientSentWebsocketMessage {
   export interface GameStatePayload {
-    localPlayerIndex: number;
+    localPlayerId: number;
     player: {
       x: number;
       y: number;

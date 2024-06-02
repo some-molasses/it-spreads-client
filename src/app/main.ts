@@ -30,7 +30,12 @@ export class CanvasController {
     CanvasController.context = context;
 
     info.innerHTML = "Loading connection to server...";
+    const timeout = setTimeout(
+      () =>
+        (info.innerHTML += "\nThis can take up to 50 seconds on initial load.")
+    );
     await WebsocketHandler.init();
+    clearTimeout(timeout);
     info.innerHTML = "Connected!";
 
     Input.setInputListeners();
@@ -51,7 +56,7 @@ export class CanvasController {
         CanvasController.canvas.height
       );
 
-      for (const player of State.players) {
+      for (const player of Object.values(State.players)) {
         player.draw(CanvasController.context);
       }
       State.spill.draw(CanvasController.context);
@@ -59,7 +64,7 @@ export class CanvasController {
       Input.doInputResponse();
 
       /**these update functions might be useless */
-      for (const player of State.players) {
+      for (const player of Object.values(State.players)) {
         player.update();
       }
       State.spill.update();
@@ -69,7 +74,7 @@ export class CanvasController {
         WebsocketHandler.canSend
       ) {
         CanvasController.lastServerSend = Date.now();
-        WebsocketHandler.send(State.getSendableState());
+        State.sendStateUpdate();
       }
     }
   }

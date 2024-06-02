@@ -9,8 +9,11 @@ export class Player extends Circle {
   dx: number = 0;
   dy: number = 0;
 
-  constructor() {
-    super(50, 50, 25, "#353ffc");
+  constructor(x: number, y: number, dx: number, dy: number, isLocal: boolean) {
+    super(x, y, 25, isLocal ? "#353ffc" : "#120254");
+
+    this.dx = dx;
+    this.dy = dy;
   }
 
   accelerate(dir: "left" | "right" | "up" | "down") {

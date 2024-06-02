@@ -29,14 +29,16 @@ export class WebsocketHandler {
       };
 
       this.ws.onmessage = (event) => {
-        console.log(event.data);
-        State.updateFromServer(JSON.parse(event.data));
+        const data = JSON.parse(event.data);
+        if (data.type !== "HANDSHAKE") {
+          resolve();
+        }
+        State.updateFromServer(data);
       };
     });
   }
 
   static send(message: ClientSentWebsocketMessage) {
-    console.log(`sending`, message);
     this.ws.send(JSON.stringify(message));
   }
 }
